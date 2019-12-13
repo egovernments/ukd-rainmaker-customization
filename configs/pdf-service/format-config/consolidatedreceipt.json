@@ -379,7 +379,7 @@
                                 "border": [
                                     true,
                                     true,
-                                    true,
+                                    false,
                                     true
                                 ],
                                 "style": "receipttablevalue"
@@ -387,7 +387,7 @@
                             {
                                 "text": "{{total}}",
                                 "border": [
-                                    true,
+                                    false,
                                     true,
                                     true,
                                     true

@@ -478,7 +478,6 @@
                   "filter": "",
                   "headers": [],
                   "tabName": "Boundary"
-
                 },
                 {
                   "id": "taxHeadsBreakupUsage",
@@ -488,7 +487,6 @@
                   "filter": "",
                   "headers": [],
                   "tabName": "Usage"
-
                 }
               ]
             }
@@ -790,7 +788,6 @@
                   "filter": "",
                   "headers": [],
                   "tabName": "Boundary"
-
                 }
               ]
             }
@@ -819,7 +816,6 @@
                   "filter": "",
                   "headers": [],
                   "tabName": "Boundary"
-
                 }
               ]
             }
@@ -960,7 +956,6 @@
       "isActive": "",
       "style": "linear",
       "visualizations": [
-
         {
           "row": 1,
           "name": "DSS_SERVICE",
@@ -1165,7 +1160,6 @@
                   "filter": "",
                   "headers": [],
                   "tabName": "Boundary"
-
                 },
                 {
                   "id": "pgrStatusByDepartment",
@@ -1175,7 +1169,6 @@
                   "filter": "",
                   "headers": [],
                   "tabName": "Department"
-
                 }
               ]
             }

@@ -12,7 +12,7 @@
     },
     {
       "topic": "egov.collection.payment-create",
-      "dataContext": "payment-dss",
+      "dataContext": "dss-payment",
       "dataContextVersion": "v1"
     }
   ]

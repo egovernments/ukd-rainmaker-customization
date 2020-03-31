@@ -8,7 +8,7 @@ Download and install from [nodejs](https://nodejs.org/en/#home-downloadhead)
 
 ## Download Code
 
-Download the create user from the [github](http://github.com) or
+Download the create user from the [github](https://github.com/egovernments/ukd-rainmaker-customization) or
 
 If git is installed use below command to get code
 

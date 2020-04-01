@@ -20,8 +20,12 @@ git clone http://github.com
 
 Open terminal and navigate to the to the downloaded folder
 
+For first time please run
 ```
-npm install
+npm install 
+```
+
+```
 node index
 ```
 

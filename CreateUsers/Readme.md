@@ -21,6 +21,7 @@ git clone http://github.com
 Open terminal and navigate to the to the downloaded folder
 
 ```
+npm install
 node index
 ```
 

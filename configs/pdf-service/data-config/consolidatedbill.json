@@ -715,7 +715,7 @@
               },
               {
                 "path": "http://tl-services:8080/tl-services/v1/_search",
-                "queryParam": "tenantId=$.tenantId,applicationNumber=$.paymentDetails[0].bill.consumerCode",
+                "queryParam": "tenantId=$.tenantId,applicationNumber=$.consumerCode",
                 "apiRequest": null,
                 "responseMapping": [
                     {

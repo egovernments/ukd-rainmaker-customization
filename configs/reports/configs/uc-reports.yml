@@ -393,10 +393,6 @@ ReportDefinitions:
     groupby: group by rh.tenantid,rh.businessservice
     orderby: order by rh.tenantid
 
-<<<<<<< HEAD
-
-=======
->>>>>>> UAT
   - reportName: MiscReceiptState
     summary: State Miscellaneous Receipt Register 
     version: 1.0.0

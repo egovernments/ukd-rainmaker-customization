@@ -252,7 +252,7 @@
                 "border": [
                   false,
                   true,
-                  false,
+                  true,
                   true
                 ],
                 "style": "receipt-table"

@@ -1653,7 +1653,7 @@
               "label": "",
               "charts": [
                 {
-                  "id": "overviewtotalApplication",
+                  "id": "totalApplication",
                   "name": "DSS_TOTAL_APPLICATION",
                   "code": "",
                   "chartType": "metric",
@@ -1801,7 +1801,7 @@
                   "headers": []
                 },
                 {
-                  "id": "overviewtotalApplication",
+                  "id": "totalApplication",
                   "name": "DSS_TOTAL_APPLICATION",
                   "code": "",
                   "chartType": "metric",

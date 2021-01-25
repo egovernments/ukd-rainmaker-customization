@@ -25,6 +25,12 @@
                  },
                  "type":"selectFromRequestInfo"  
                },
+                {
+                              "variable": "bankName",
+                              "value": {
+                                  "path": "$.bankName"
+                              }
+                    },
                {
                  "variable": "payerContact", 
                  "value": {

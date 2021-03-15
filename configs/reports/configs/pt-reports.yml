@@ -1403,14 +1403,14 @@ ReportDefinitions:
     searchClause: AND demand.taxperiodto <= $toDate
   query: | 
      select initcap(split_part(prop.tenantid, '.', 2)) as tenantid,
-     prop.propertyid,
+     prop.property,
      sum(dd.taxamount-dd.collectionamount) as ArrearCollection
-     from eg_pt_property_v2 prop
+     from eg_pt_propertydetail_v2 prop
      join egbs_demand_v1 demand
-     on prop.propertyid= demand.consumercode
+     on prop.property= demand.consumercode
      join egbs_demanddetail_v1 dd
      on dd.demandid= demand.id
      where dd.taxheadcode like('PT_%')
      and prop.tenantid LIKE $tenantid and 
-  groupby: GROUP BY prop.tenantid, prop.propertyid              
+  groupby: GROUP BY prop.tenantid, prop.property              
   

@@ -21,6 +21,10 @@
           "id": "overview"
         },
         {
+          "name": "Property Tax",
+          "id": "propertyTax"
+        },
+        {
           "name": "Misc Collect",
           "id": "mCollect"
         }
@@ -41,6 +45,9 @@
         },
         {
           "id": "ulb-mCollect"
+        },
+        {
+          "id": "ulb-propertyTax"
         },
         {
           "id": "ulb-home"

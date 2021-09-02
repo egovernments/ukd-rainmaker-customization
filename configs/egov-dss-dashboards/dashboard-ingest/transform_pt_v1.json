@@ -24,7 +24,7 @@
           "status": "status",
           "acknowldgementNumber": "acknowldgementNumber",
           "usageCategory": "usageCategory",
-          "timestamp": "@timestamp"          
+          "timestamp": "@timestamp",          
         "ward" : "ward"     
     }
   }

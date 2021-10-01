@@ -1274,7 +1274,7 @@ ReportDefinitions:
     source: pt
     wrapper: true
     isMandatory: false
-    searchClause: AND pt.tenantid = $ulb
+    searchClause: AND pt.tenantid = $ulbB
   query: |
     SELECT
     initcap(split_part(pt.tenantid, '.', 2)) as tenantId,

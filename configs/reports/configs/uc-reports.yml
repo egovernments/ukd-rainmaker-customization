@@ -163,16 +163,6 @@ ReportDefinitions:
         type: string
         source: uc
         total: false
-      - name: g8issuedate
-        label: reports.uc.g8issuedate
-        type: string
-        source: uc
-        total: false
-      - name: g8receiptno
-        label: reports.uc.g8receiptno
-        type: string
-        source: uc
-        total: false
       - name: status
         label: reports.uc.receiptstatus
         type: string

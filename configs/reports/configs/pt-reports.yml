@@ -1120,7 +1120,12 @@ ReportDefinitions:
     label: reports.pt.count
     type: string
     source: pt
-    total: true    
+    total: true 
+  - name: username
+    label: reports.pt.username
+    type: string
+    source: pt
+    total: false
   searchParams:
   - name: fromDate
     label: reports.pt.fromDate
@@ -1143,11 +1148,11 @@ ReportDefinitions:
     isMandatory: false
     searchClause: AND p.tenantId = $ulb
   query: |
-    select initcap(split_part(p.tenantId, '.', 2)) as tenantId, p.paymentmode ,sum(p.totalamountpaid), count(p.id)
-    FROM egcl_payment p, egcl_paymentdetail pd 
-    WHERE p.id=pd.paymentid  and pd.businessservice ='PT'
-  groupby: GROUP BY p.tenantid, p.paymentmode
-  orderby: ORDER BY p.tenantId asc
+    select initcap(split_part(p.tenantId, '.', 2)) as tenantId, p.paymentmode, sum(p.totalamountpaid), count(p.id), un.username as username
+    FROM egcl_payment p, egcl_paymentdetail pd, eg_user un
+    WHERE p.id=pd.paymentid and p.createdby=CAST(un.id as varchar) and pd.businessservice='PT' and p.tenantid != 'uk.testing'
+    groupby: GROUP BY p.tenantid, p.paymentmode, un.username
+    orderby: ORDER BY p.tenantId asc
 
 - reportName: PTAdoptionReport
   summary: Number of applications

@@ -1150,7 +1150,8 @@ ReportDefinitions:
     UNION
     select initcap(split_part(p.tenantid, '.', 2)) as tenantId, p.paymentmode, sum(p.totalamountpaid), count(p.id)
       FROM egcl_payment p, egcl_paymentdetail pd
-      WHERE p.id=pd.paymentid and p.createdby=CAST(un.id as varchar) and pd.businessservice='PT' and p.tenantid != 'uk.testing'
+      WHERE p.id=pd.paymentid and p.createdby in (select un.id::text from eg_user un where un.username in ('BBPS_ADMIN'))
+      and pd.businessservice='PT' and p.tenantid != 'uk.testing'
     groupby: GROUP BY p.tenantid, p.paymentmode
     
 

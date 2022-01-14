@@ -1143,9 +1143,9 @@ ReportDefinitions:
     isMandatory: false
     searchClause: AND p.tenantId = $ulb
   query: |
-    select initcap(split_part(p.tenantId, '.', 2)) as tenantId, p.paymentmode ,sum(p.totalamountpaid), count(p.id)
+    select initcap(split_part(p.tenantId, '.', 2)) as tenantId, p.paymentmode, sum(p.totalamountpaid), count(p.id)
     FROM egcl_payment p, egcl_paymentdetail pd 
-    WHERE p.id=pd.paymentid  and pd.businessservice ='PT'
+    WHERE p.id=pd.paymentid  and pd.businessservice ='PT' and p.createdby in (select id::text from eg_user where username not in ('BBPS_ADMIN')) 
   groupby: GROUP BY p.tenantid, p.paymentmode
   orderby: ORDER BY p.tenantId asc
 
@@ -1678,3 +1678,58 @@ ReportDefinitions:
     WHERE pi.tenantid != 'uk.testing'
   groupby: GROUP BY tenantid
   orderby: ORDER BY tenantid asc
+  
+- reportName: PTBBPSCollectionCount
+  reporptabel: report.state.level.pt.bbpscollection
+  summary: Shows the total properties and  bbps collection
+  version: 1.0.0
+  moduleName: rainmaker-pt
+  sourceColumns:
+  - name: tenantId
+    label: reports.pt.tenantid
+    type: string
+    source: pt
+    total: false
+  - name: paymentmode
+    label: reports.pt.paymentmode
+    type: string
+    source: pt
+    total: false
+  - name: sum
+    label: reports.pt.total
+    type: string
+    source: pt
+    total: true
+  - name: count
+    label: reports.pt.count
+    type: string
+    source: pt
+    total: true    
+  searchParams:
+  - name: fromDate
+    label: reports.pt.fromDate
+    type: epoch
+    source: pt
+    isMandatory: false
+    searchClause: AND p.lastmodifiedtime >= $fromDate
+  - name: toDate
+    label: reports.pt.toDate
+    type: epoch
+    source: pt
+    isMandatory: false
+    searchClause: AND p.lastmodifiedtime <= $toDate
+  - name: ulb
+    label: reports.pt.tenantid
+    type: singlevaluelist
+    pattern: http://egov-mdms-service:8080/egov-mdms-service/v1/_get?tenantId=$tenantid&moduleName=tenant&masterName=tenants|$.MdmsRes.tenant.tenants.*.code|$.MdmsRes.tenant.tenants.*.name
+    source: pt
+    wrapper: true
+    isMandatory: false
+    searchClause: AND p.tenantId = $ulb
+  query: |
+    select initcap(split_part(p.tenantId, '.', 2)) as tenantId, p.paymentmode, sum(p.totalamountpaid), count(p.id)
+    FROM egcl_payment p, egcl_paymentdetail pd 
+    WHERE p.id=pd.paymentid  and pd.businessservice ='PT' and p.createdby in (select id::text from eg_user where username in ('BBPS_ADMIN')) 
+  groupby: GROUP BY p.tenantid, p.paymentmode
+  orderby: ORDER BY p.tenantId asc
+

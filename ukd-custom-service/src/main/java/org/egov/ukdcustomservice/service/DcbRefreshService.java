@@ -69,7 +69,7 @@ public class DcbRefreshService {
 				" ( "+
 				" SELECT sum(unit.arv)"+
 				" FROM eg_pt_unit unit "+
-				" WHERE unit.propertyid=prop.id),0) currentarv,"+
+				" WHERE unit.propertyid=prop.id and unit.active = 't'),0) currentarv,"+
 				" COALESCE("+
 				" ("+
 				" "+

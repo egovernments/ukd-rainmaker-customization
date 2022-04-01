@@ -154,7 +154,7 @@ public class RollOverService {
             else{
                 long count = getTenantCount(tenantList.get(i));
 
-                log.info("\n\ntenant--->"+tenantList.get(i)+"\n\n");//FIXME: Remove System out println
+                log.info("\n\ntenant--->"+tenantList.get(i)+"\n\n");
                 log.info("\n\ncount--->"+count+"\n\n");
 
                 if(rollOverCount.getRecordCount() >= count){

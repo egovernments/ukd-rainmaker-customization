@@ -453,7 +453,7 @@
                   "filter": "",
                   "headers": [],
                   "tabName": "Boundary"
-                  
+
                 }
               ]
             }
@@ -1047,7 +1047,6 @@
         }
       ]
     },
-    
     {
       "name": "DSS_HOME_DASHBOARD",
       "id": "home",
@@ -1155,11 +1154,11 @@
                 }
               ]
             },
-             {
+            {
               "id": 141,
               "name": "DSS_PROPERTY_TAX",
               "vizType": "module",
-             
+
               "ref": {
                 "url": "propertytax",
                 "logoUrl": "",
@@ -1637,16 +1636,16 @@
                   "headers": []
                 }
               ]
-            } 
-            
-            
+            }
+
+
           ]
         },
         {
           "row": 2,
           "name": "DSS_REVENUE",
           "vizArray": [
-           
+            
             {
               "id": 123,
               "name": "DSS_TOTAL_CUMULATIVE_COLLECTION:_DEPARTMENT_WISE",
@@ -1668,48 +1667,48 @@
                 }
               ]
             },
-            {	
-              "id": 121,	
-              "name": "DSS_TOP_PERFORMING_ULBS",	
-              "dimensions": {	
-                "height": 250,	
-                "width": 4	
-              },	
-              "vizType": "performing-metric",	
-              "noUnit": false,	
-              "isCollapsible": false,	
-              "label": "",	
-              "charts": [	
-                {	
-                  "id": "topPerformingUlbs",	
-                  "name": "DSS_TOP_PERFORMING_ULBS",	
-                  "code": "",	
-                  "chartType": "bar",	
-                  "filter": "",	
-                  "headers": []	
-                }	
-              ]	
-            },	
-            {	
-              "id": 122,	
-              "name": "DSS_BOTTOM_PERFORMING_ULBS",	
-              "dimensions": {	
-                "height": 250,	
-                "width": 4	
-              },	
-              "vizType": "performing-metric",	
-              "noUnit": false,	
-              "isCollapsible": false,	
-              "charts": [	
-                {	
-                  "id": "bottomPerformingUlbs",	
-                  "name": "DSS_BOTTOM_PERFORMING_ULBS",	
-                  "code": "",	
-                  "chartType": "bar",	
-                  "filter": "",	
-                  "headers": []	
-                }	
-              ]	
+            {
+              "id": 121,
+              "name": "DSS_TOP_PERFORMING_ULBS",
+              "dimensions": {
+                "height": 250,
+                "width": 4
+              },
+              "vizType": "performing-metric",
+              "noUnit": false,
+              "isCollapsible": false,
+              "label": "",
+              "charts": [
+                {
+                  "id": "topPerformingUlbs",
+                  "name": "DSS_TOP_PERFORMING_ULBS",
+                  "code": "",
+                  "chartType": "bar",
+                  "filter": "",
+                  "headers": []
+                }
+              ]
+            },
+            {
+              "id": 122,
+              "name": "DSS_BOTTOM_PERFORMING_ULBS",
+              "dimensions": {
+                "height": 250,
+                "width": 4
+              },
+              "vizType": "performing-metric",
+              "noUnit": false,
+              "isCollapsible": false,
+              "charts": [
+                {
+                  "id": "bottomPerformingUlbs",
+                  "name": "DSS_BOTTOM_PERFORMING_ULBS",
+                  "code": "",
+                  "chartType": "bar",
+                  "filter": "",
+                  "headers": []
+                }
+              ]
             }
           ]
         },
@@ -1929,7 +1928,7 @@
       ]
     },
 
-     {
+    {
       "name": "DSS_PROPERTY_TAX_DASHBOARD",
       "id": "propertyTax",
       "isActive": "",
@@ -1950,7 +1949,7 @@
               "label": "DSS_OVERVIEW",
               "noUnit": true,
               "isCollapsible": false,
-             
+
               "charts": [
                 {
                   "id": "ptTodaysCollection",
@@ -1999,7 +1998,7 @@
               "label": "",
               "noUnit": true,
               "isCollapsible": false,
-             
+
               "charts": [
                 {
                   "id": "ptCumulativeCollection",
@@ -2083,10 +2082,9 @@
                 }
               ]
             }
-          
           ]
         },
-         {
+        {
           "row": 3,
           "name": "DSS_REVENUE",
           "vizArray": [
@@ -2123,47 +2121,9 @@
             }
           ]
         },
+
         {
           "row": 4,
-          "name": "DSS_REVENUE",
-          "vizArray": [
-            {
-              "id": 231,
-              "name": "DSS_PT_TAX_HEAD",
-              "dimensions": {
-                "height": 350,
-                "width": 12
-              },
-              "vizType": "chart",
-              "label": "",
-              "noUnit": false,
-              "isCollapsible": true,
-              "charts": [
-                {
-                  "id": "taxHeadsBreakupDDRRevenue",
-                  "name": "DSS_PT_TAX_HEAD_BREAKUP_REVENUE",
-                  "code": "",
-                  "chartType": "table",
-                  "filter": "",
-                  "headers": [],
-                  "tabName": "Boundary"
-                },
-                {
-                  "id": "taxHeadsBreakupUsage",
-                  "name": "DSS_PT_TAX_HEAD_BREAKUP_USAGE",
-                  "code": "",
-                  "chartType": "table",
-                  "filter": "",
-                  "headers": [],
-                  "tabName": "Usage"
-                }
-              ]
-            }
-          ]
-        },
- 
-        {
-          "row": 5,
           "name": "DSS_SERVICE",
           "vizArray": [
             {
@@ -2176,7 +2136,7 @@
               "vizType": "metric-collection",
               "isCollapsible": false,
               "label": "DSS_OVERVIEW",
-             
+
               "charts": [
                 {
                   "id": "ptTotalApplication",
@@ -2216,9 +2176,6 @@
                 }
               ]
             }
-            
-           
-             
           ]
         },
         {
@@ -2266,20 +2223,9 @@
                 }
               ]
             }
-            
           ]
         }
-            
-      
-      
       ]
     }
-    
-    
-    
-    
-    
-    
-  
   ]
 }

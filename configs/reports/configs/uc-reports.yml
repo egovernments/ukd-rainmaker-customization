@@ -163,16 +163,6 @@ ReportDefinitions:
         type: string
         source: uc
         total: false
-      - name: g8issuedate
-        label: reports.uc.g8issuedate
-        type: string
-        source: uc
-        total: false
-      - name: g8receiptno
-        label: reports.uc.g8receiptno
-        type: string
-        source: uc
-        total: false
       - name: status
         label: reports.uc.receiptstatus
         type: string
@@ -289,7 +279,7 @@ ReportDefinitions:
           initcap(split_part(rh.tenantid, '.', 2)) as ulb,
           bi.consumercode as receiptnumber,
           To_char((To_timestamp(rh.receiptdate / 1000) at time Zone 'Asia/Kolkata'), 'DD/MM/YYYY') as receiptdate,
-          (select message from message where locale ='en_IN'and code =(CONCAT('BILLINGSERVICE_BUSINESSSERVICE_',UPPER(replace(replace(rh.businessservice,'-','_'),'.','_'))))) as Businesservice,
+          (select message from message where locale ='en_IN' and module='rainmaker-uc' and code =(CONCAT('BILLINGSERVICE_BUSINESSSERVICE_',UPPER(replace(replace(rh.businessservice,'-','_'),'.','_'))))) as Businesservice,
           receipt_breakup.*,
           (case when py.paymentmode like 'CASH' then '' else  transactionnumber end) as ddorchequenumber,
           bi.totalamount as TotalAmount,
@@ -303,7 +293,7 @@ ReportDefinitions:
         JOIN receipt_breakup ON bd.id = receipt_breakup.receiptheader
         JOIN egcl_billaccountdetail as ba ON bd.id=ba.billdetailid
         JOIN eg_user ON py.createdby::INTEGER=eg_user.id
-        WHERE  bi.status != 'CANCELLED'  AND bi.consumercode like 'UC%'
+        WHERE  bi.status != 'CANCELLED'  AND (bi.consumercode LIKE '%UC%' OR bi.consumercode LIKE '%UK%')
         AND rh.tenantid=$tenantid AND rh.tenantid != 'uk.testing'
     orderby: ORDER BY receiptdate DESC
 
@@ -377,7 +367,7 @@ ReportDefinitions:
         -- Use CTE to force query plan, compute & use CTE later
         SELECT 
           initcap(split_part(rh.tenantid, '.', 2)) as ulb,
-          (select message from message where locale ='en_IN'and code =(CONCAT('BILLINGSERVICE_BUSINESSSERVICE_',UPPER(replace(replace(rh.businessservice,'-','_'),'.','_'))))) as servicecategory,count(distinct py.*) as receipts,
+          (select message from message where locale ='en_IN'and code =(CONCAT('BILLINGSERVICE_BUSINESSSERVICE_',UPPER(replace(replace(rh.businessservice,'-','_'),'.','_'))))limit 1) as servicecategory,count(distinct py.*) as receipts,
           SUM(CASE WHEN taxheadcode LIKE '%_FIELD_FEE' THEN adjustedamount ELSE 0 END) as fieldcollection,
           SUM(CASE WHEN taxheadcode LIKE '%_TAX' THEN adjustedamount ELSE 0 END) as tax, 
           SUM(CASE WHEN taxheadcode LIKE '%_CGST' THEN adjustedamount ELSE 0 END) as cgst, 
@@ -388,7 +378,7 @@ ReportDefinitions:
         JOIN egcl_bill as bi ON bi.id=rh.billid
         JOIN egcl_billdetial as bd ON bd.billid=bi.id
         JOIN egcl_billaccountdetail as ba ON bd.id=ba.billdetailid
-        WHERE bi.status != 'CANCELLED'  AND bi.consumercode like 'UC%'
+        WHERE bi.status != 'CANCELLED'  AND (bi.consumercode LIKE '%UC%' OR bi.consumercode LIKE '%UK%')
         and rh.tenantid != 'uk.testing'
     groupby: group by rh.tenantid,rh.businessservice
     orderby: order by rh.tenantid
@@ -580,7 +570,7 @@ ReportDefinitions:
     query: |
         -- Use CTE to force query plan, compute & use CTE later
         SELECT
-          (select message from message where locale ='en_IN'and code =(CONCAT('BILLINGSERVICE_BUSINESSSERVICE_',UPPER(replace(replace(rh.businessservice,'-','_'),'.','_'))))) as servicetype,
+          (select message from message where locale ='en_IN' and module='rainmaker-uc' and code =(CONCAT('BILLINGSERVICE_BUSINESSSERVICE_',UPPER(replace(replace(rh.businessservice,'-','_'),'.','_'))))) as servicetype,
           count(distinct rh.id) as totalreceipts,
           SUM(CASE WHEN taxheadcode LIKE '%_TAX' THEN adjustedamount ELSE 0 END) as tax,
           SUM(CASE WHEN taxheadcode LIKE '%_CGST' THEN adjustedamount ELSE 0 END) as cgst,
@@ -590,11 +580,12 @@ ReportDefinitions:
         FROM egcl_billaccountdetail as ba, egcl_paymentdetail AS rh
         JOIN egcl_bill as bi ON bi.id=rh.billid
         JOIN egcl_billdetial as bd ON bd.billid=bi.id
-        WHERE bd.id=ba.billdetailid and bd.billid=bi.id and bi.id=rh.billid and bi.status != 'CANCELLED' AND rh.tenantid=$tenantid AND rh.tenantid != 'uk.testing' AND  bi.consumercode like 'UC%'
+        WHERE bd.id=ba.billdetailid and bd.billid=bi.id and bi.id=rh.billid and bi.status != 'CANCELLED' AND rh.tenantid=$tenantid AND rh.tenantid != 'uk.testing' AND  (bi.consumercode LIKE '%UC%' OR bi.consumercode LIKE '%UK%')
     groupby:   GROUP BY rh.businessservice
     orderby:   ORDER BY rh.businessservice
 
   - reportName: MiscReceiptULBCancelled
+    decryptionPathId: MiscReceiptULBCancelled
     summary: Cancelled Receipt Miscellaneous
     version: 1.0.0
     moduleName: rainmaker-uc
@@ -657,11 +648,17 @@ ReportDefinitions:
         type: string
         source: uc
         total: false
-      - name: collectorname
+      - name: username
         label: reports.uc.collectorname
         type: string
         source: uc
         total: false
+      - name: user_uuid
+        label: reports.pt.user_uuid
+        type: string
+        source: pt
+        total: false
+        showColumn: true
       - name: totalamount
         label: reports.uc.totalamount
         type: string
@@ -714,7 +711,8 @@ ReportDefinitions:
           receipt_breakup.*,
           (case when py.paymentmode like 'CASH' then '' else  transactionnumber end) as ddorchequenumber,
           bi.totalamount as TotalAmount,
-          eg_user.name as collectorname,
+          eg_user.name as username,
+          eg_user.uuid as user_uuid,
           py.paymentmode as paymentMode,
           bi.status as status
         FROM egcl_payment as py
@@ -724,11 +722,12 @@ ReportDefinitions:
         JOIN receipt_breakup ON bd.id = receipt_breakup.receiptheader
         JOIN egcl_billaccountdetail as ba ON bd.id=ba.billdetailid
         JOIN eg_user ON py.createdby::INTEGER=eg_user.id
-        WHERE  bi.status = 'CANCELLED'  AND bi.consumercode like 'UC%'
+        WHERE  bi.status = 'CANCELLED'  AND (bi.consumercode LIKE '%UC%' OR bi.consumercode LIKE '%UK%')
         AND rh.tenantid=$tenantid AND rh.tenantid != 'uk.testing'
     orderby: ORDER BY receiptdate DESC
 
   - reportName: MiscReceiptULBShort
+    decryptionPathId: MiscReceiptULBShort
     summary: Receipt Register Miscellaneous
     version: 1.0.0
     moduleName: rainmaker-uc
@@ -766,11 +765,17 @@ ReportDefinitions:
         type: string
         source: uc
         total: false
-      - name: collectorname
+      - name: username
         label: reports.uc.collectorname
         type: string
         source: uc
         total: false
+      - name: user_uuid
+        label: reports.pt.user_uuid
+        type: string
+        source: pt
+        total: false
+        showColumn: true
     searchParams:
       - name: fromDate
         label: reports.uc.fromDate
@@ -794,16 +799,17 @@ ReportDefinitions:
         searchClause: AND eg_user.id = $collectorname::INTEGER
     query: |
         -- Use CTE to force query plan, compute & use CTE later
-        select eg_user.name as collectorname,
+        select eg_user.name as username,
+        eg_user.uuid as user_uuid,
         py.payername as consumername, 
         py.mobilenumber as mobilenumber,
         bi.totalamount as amount,
-        (select message from message where locale ='en_IN'and code =(CONCAT('BILLINGSERVICE_BUSINESSSERVICE_',UPPER(replace(replace(rh.businessservice,'-','_'),'.','_'))))) as servicecategory,
+        (select message from message where locale ='en_IN' and module='rainmaker-uc' and code =(CONCAT('BILLINGSERVICE_BUSINESSSERVICE_',UPPER(replace(replace(rh.businessservice,'-','_'),'.','_'))))) as servicecategory,
         To_char((To_timestamp(rh.receiptdate / 1000) at time Zone 'Asia/Kolkata'), 'DD/MM/YYYY') as receiptdate, 
         rh.additionaldetails->>'comment' as remarks
         from egcl_payment py  JOIN egcl_paymentdetail AS rh ON py.id=rh.paymentid
         JOIN egcl_bill as bi ON bi.id=rh.billid 
         JOIN eg_user ON py.createdby::INTEGER=eg_user.id
-        where bi.status != 'CANCELLED' AND bi.consumercode LIKE '%UC%
+        where bi.status != 'CANCELLED' AND (bi.consumercode LIKE '%UC%' OR bi.consumercode LIKE '%UK%')
         AND rh.tenantid=$tenantid AND rh.tenantid != 'uk.testing'
     orderby: ORDER BY rh.receiptdate DESC;

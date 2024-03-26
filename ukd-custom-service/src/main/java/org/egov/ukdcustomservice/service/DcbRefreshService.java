@@ -16,7 +16,7 @@ public class DcbRefreshService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate; 
 	
-	public static final String tenantsQuery="select distinct tenantid from eg_pt_property_v2";
+	public static final String tenantsQuery="select distinct tenantid from eg_pt_property where tenantid != 'uk.dehradun'";
 	public static final String deleteQuery="delete from  dcb where propertyid in "+
 	" ("
 	+ "select propertyid from eg_pt_property_v2 prop,egbs_demand_v1 demand, egbs_demanddetail_v1 dd " +
@@ -44,22 +44,6 @@ public class DcbRefreshService {
 				"     prop.createdtime AS createddate,"+
 				"     pd.usagecategoryminor AS usage,"+
 				"     prop.tenantid as tenantid,"+
-				"   (select  u.name ||',' || u.mobilenumber from eg_pt_owner_v2 po, eg_user u   where "+
-				"	 po.userid=u.uuid and "+
-				"	 po.propertydetail = "+
-				"     ("+
-				"     SELECT"+
-				"     assessmentnumber "+
-				"     FROM"+
-				"     eg_pt_propertydetail_v2 "+
-				"     WHERE"+
-				"     property = prop.propertyid "+
-				"		 and "+
-				"		 tenantid=prop.tenantid"+
-				"     ORDER BY"+
-				"     substr(financialyear, 0, 5)::INTEGER DESC LIMIT 1"+
-				"     ) limit 1)  "+
-				" AS ownernamemobile ,"+
 				"     COALESCE(("+
 				"     SELECT"+
 				"     SUM(dd.taxamount) "+
@@ -224,7 +208,71 @@ public class DcbRefreshService {
 				"     AND demand.id = dd.demandid "+
 				"     AND dd.taxheadcode not like '%REBATE%'"+
 				"     AND demand.consumercode = prop.propertyid), 0) totalcollected , "+
-				"	    now() AS updatedtime " +
+				"	    now() AS updatedtime," +
+				"   (select  u.name from eg_pt_owner_v2 po, eg_user u   where "+
+				"	 po.userid=u.uuid and "+
+				"	 po.propertydetail = "+
+				"     ("+
+				"     SELECT"+
+				"     assessmentnumber "+
+				"     FROM"+
+				"     eg_pt_propertydetail_v2 "+
+				"     WHERE"+
+				"     property = prop.propertyid "+
+				"		 and "+
+				"		 tenantid=prop.tenantid"+
+				"     ORDER BY"+
+				"     substr(financialyear, 0, 5)::INTEGER DESC LIMIT 1"+
+				"     ) limit 1)  "+
+				" AS name, "+
+				"     COALESCE(("+
+				"     SELECT"+
+				"     SUM(dd.collectionamount) "+
+				"     FROM"+
+				"     egbs_demand_v1 demand, egbs_demanddetail_v1 dd "+
+				"     WHERE"+
+				"      demand.tenantid = dd.tenantid "+
+				"     AND demand.id = dd.demandid "+
+				"     AND dd.taxheadcode like '%REBATE%'"+
+				"     AND "+
+				"     ("+
+				"     EXTRACT(epoch "+
+				"     FROM"+
+				"     now())*1000 BETWEEN demand.taxperiodfrom AND demand.taxperiodto"+
+				"     )"+
+				"     AND demand.consumercode = prop.propertyid), 0) currentrebate "+
+				"   (select  u.guardian from eg_pt_owner_v2 po, eg_user u   where "+
+				"	 po.userid=u.uuid and "+
+				"	 po.propertydetail = "+
+				"     ("+
+				"     SELECT"+
+				"     assessmentnumber "+
+				"     FROM"+
+				"     eg_pt_propertydetail_v2 "+
+				"     WHERE"+
+				"     property = prop.propertyid "+
+				"		 and "+
+				"		 tenantid=prop.tenantid"+
+				"     ORDER BY"+
+				"     substr(financialyear, 0, 5)::INTEGER DESC LIMIT 1"+
+				"     ) limit 1)  "+
+				" AS guardian, "+
+				"   (select  u.mobilenumber from eg_pt_owner_v2 po, eg_user u   where "+
+				"	 po.userid=u.uuid and "+
+				"	 po.propertydetail = "+
+				"     ("+
+				"     SELECT"+
+				"     assessmentnumber "+
+				"     FROM"+
+				"     eg_pt_propertydetail_v2 "+
+				"     WHERE"+
+				"     property = prop.propertyid "+
+				"		 and "+
+				"		 tenantid=prop.tenantid"+
+				"     ORDER BY"+
+				"     substr(financialyear, 0, 5)::INTEGER DESC LIMIT 1"+
+				"     ) limit 1)  "+
+				" AS mobilenumber "+
 				"     FROM "+
 				"     eg_pt_property_v2 prop,"+
 				"     eg_pt_propertydetail_v2 pd,"+

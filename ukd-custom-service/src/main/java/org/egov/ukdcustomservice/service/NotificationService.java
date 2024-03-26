@@ -1,10 +1,13 @@
 package org.egov.ukdcustomservice.service;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.ukdcustomservice.producer.Producer;
+import org.egov.ukdcustomservice.web.models.NotificationRequest;
 import org.egov.ukdcustomservice.web.models.Notifications;
 import org.egov.ukdcustomservice.web.models.SMS;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,7 @@ public class NotificationService {
     @Autowired
     private URLShorterService urlShorterService;
 
-    @Value("${egov.notify.pt.message.key}")
+    @Value("${egov.pt.unpaid.send.sms.key}")
     private String ptKey;
 
     @Value("${egov.notify.pt.message.module}")
@@ -43,48 +46,45 @@ public class NotificationService {
     @Value("${egov.notify.pt.url.format}")
     private String urlFormat;
 
-    public void NotificationPush(List<Notifications> notifications, String key, RequestInfo requestInfo) {
-
-        SMS sms = new SMS();
-
-        String message = getMessage(key, requestInfo);
-        String ulbname = getTenant(notifications.get(0).getTenantId(), requestInfo);
+    public void NotificationPush(List<Notifications> notifications, String key, RequestInfo requestInfo, NotificationRequest notificationRequest) {
 
         notifications.forEach(val -> {
-            sms.setMobileNumber(val.getMobileNumber());
-            String longURL = String.format(urlFormat, domainName, val.getConsumerNumber(), val.getTenantId());
-            String url = urlShorterService.getUrl(longURL);
-            log.info("Shorth url: "+ url);
-            // message.replace("<ownername>", val.getOwnerName());
-            String content = message.replace("<taxamount>", val.getPendingAmount());
-            content = content.replace("<domain>", domainName);
-            content = content.replace("<url>", url);
-            content = content.replace("<propertyid>", val.getConsumerNumber());
-            content = content.replace("<tenantid>", val.getTenantId());
-            content = content.replace("<FY>", getFY());
-            content = content.replace("<ulbname>", ulbname);
-
-            sms.setMessage(content);
-            log.info(val.getMobileNumber() + " " + content);
-
-            // format the message
-            if (shouldPush)
-                producer.pushToSMSTopic(sms);
+			if (val.getPendingAmount() != null && new BigDecimal(val.getPendingAmount()).compareTo(BigDecimal.valueOf(10)) > 0
+					&& val.getOwnerNameMobileNo() != null && !val.getOwnerNameMobileNo().isEmpty())
+	        	for(Map.Entry<String, String> nameMob : val.getOwnerNameMobileNo().entrySet()) {
+	        		SMS sms = new SMS();
+	        		String message = getMessage(key, requestInfo, notificationRequest);
+	        		sms.setMobileNumber(nameMob.getKey());
+	                String longURL = urlFormat.replace("$host", domainName).replace("$propertyId", val.getPropertyId()).replace("$tenantId", val.getTenantId());
+	                String url = urlShorterService.getUrl(longURL);
+	                log.info("Shorth url: {}", url);
+	                String content = message.replace("{ownername}", nameMob.getValue());
+	                content = content.replace("{domain}", url);
+	                content = content.replace("{propertyid}", val.getPropertyId());
+	                content = content.replace("{tenantid}", val.getTenantId());
+	                content = content.replace("{FY}", getFY());
+	                content = content.replace("{ulbname}", val.getTenantId().split("\\.").length == 1 ? val.getTenantId() : val.getTenantId().split("\\.")[1]);
+	
+	                sms.setMessage(content);
+	                log.info(nameMob.getKey() + " " + content);
+	               log.info("Pushing to kafka!!!!!");
+	               producer.pushToSMSTopic(sms);
+	        	}
         });
 
     }
 
-    private String getTenant(String tenantid, RequestInfo requestInfo) {
-        return localizationService.getResult("TENANT_TENANTS_".concat(tenantid.replace(".", "_").toUpperCase()),
-                "rainmaker-common", requestInfo);
-    }
+	/*
+	 * private String getTenant(String tenantid, RequestInfo requestInfo) { return
+	 * localizationService.getResult("TENANT_TENANTS_".concat(tenantid.replace(".",
+	 * "_").toUpperCase()), "rainmaker-common", requestInfo); }
+	 */
 
-    private String getMessage(String key, RequestInfo requestInfo) {
+    private String getMessage(String key, RequestInfo requestInfo, NotificationRequest notificationRequest) {
 
         String message = "";
-
         if (key.equals("PT")) {
-            message = localizationService.getResult(ptKey, ptModule, requestInfo);
+            message = localizationService.getResult(ptKey, ptModule, requestInfo, notificationRequest);
         }
 
         return message;
